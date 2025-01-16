@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name = "lists")
 public class List {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "title", nullable = false)
@@ -18,8 +18,9 @@ public class List {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "is_published", nullable = false)
     private Boolean isPublished = false;
@@ -37,9 +38,9 @@ public class List {
 
     public String getDescription() { return this.description; }
 
-    public void setUserId(UUID userId) { this.userId = userId; }
+    public void setUser(User user) { this.user = user; }
 
-    public UUID getUserId() { return this.userId; }
+    public User getUser() { return this.user; }
 
     public void setIsPublished(Boolean isPublished) { this.isPublished = isPublished; }
 

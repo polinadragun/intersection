@@ -5,12 +5,10 @@ import com.intersection.domain.entity.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ListRepository {
+public interface IListRepository {
     List save(List list);
 
     Optional<List> findByTitle(String title);
-
-    Boolean isFoundById(UUID id);
 
     Optional<List> findById(UUID id);
 

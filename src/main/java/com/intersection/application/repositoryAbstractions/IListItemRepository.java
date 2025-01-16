@@ -3,14 +3,15 @@ package com.intersection.application.repositoryAbstractions;
 import com.intersection.domain.entity.ListItem;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
-public interface ListItemRepository {
+public interface IListItemRepository {
     ListItem save(ListItem list);
 
-    Boolean isFoundById(UUID id);
+    Optional<ListItem> findById(UUID id);
 
-    Collection<ListItem> findByListId(UUID listId);
+    Collection<ListItem> findAllById(UUID listId);
 
     void deleteById(UUID itemId);
 }
