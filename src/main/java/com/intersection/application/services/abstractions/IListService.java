@@ -13,6 +13,8 @@ public interface IListService {
 
     IResultType<List> getListByTitle(String title);
 
+    IResultType<List> getListById(UUID listId);
+
     IResultType<Void> updateList(String title, String description);
 
     IResultType<Void> deleteList(UUID id);

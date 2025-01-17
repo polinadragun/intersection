@@ -19,13 +19,13 @@ import java.util.UUID;
 
 @Service
 public class ListService implements IListService {
-    private final IListRepository IListRepository;
-    private final IListItemRepository IListItemRepository;
+    private final IListRepository listRepository;
+    private final IListItemRepository listItemRepository;
 
     @Autowired
-    public ListService(IListRepository IListRepository, IListItemRepository IListItemRepository) {
-        this.IListRepository = IListRepository;
-        this.IListItemRepository = IListItemRepository;
+    public ListService(IListRepository listRepository, IListItemRepository listItemRepository) {
+        this.listRepository = listRepository;
+        this.listItemRepository = listItemRepository;
     }
 
     @Override
@@ -41,13 +41,23 @@ public class ListService implements IListService {
         list.setCreatedAt(LocalDateTime.now());
         list.setIsPublished(false);
 
-        List savedList = IListRepository.save(list);
+        List savedList = listRepository.save(list);
         return new Success<>("List created successfully", savedList.getId());
     }
 
     @Override
     public IResultType<List> getListByTitle(String title) {
-        Optional<List> list = IListRepository.findByTitle(title);
+        Optional<List> list = listRepository.findByTitle(title);
+        if (!list.isPresent()) {
+            return new Failure<>("List not found");
+        }
+
+        return new Success<>("List found", list.get());
+    }
+
+    @Override
+    public IResultType<List> getListById(UUID listId) {
+        Optional<List> list = listRepository.findById(listId);
         if (!list.isPresent()) {
             return new Failure<>("List not found");
         }
@@ -61,7 +71,7 @@ public class ListService implements IListService {
             return new Failure<>("Title cannot be null or empty");
         }
 
-        Optional<List> optionalList = IListRepository.findByTitle(title);
+        Optional<List> optionalList = listRepository.findByTitle(title);
         if (!optionalList.isPresent()) {
             return new Failure<>("List not found");
         }
@@ -69,24 +79,24 @@ public class ListService implements IListService {
         List list = optionalList.get();
         list.setTitle(title);
         list.setDescription(description);
-        IListRepository.save(list);
+        listRepository.save(list);
 
         return new Success<>("List updated successfully");
     }
 
     @Override
     public IResultType<Void> deleteList(UUID id) {
-        if (!IListRepository.findById(id).isPresent()) {
+        if (!listRepository.findById(id).isPresent()) {
             return new Failure<>("List not found");
         }
 
-        IListRepository.deleteById(id);
+        listRepository.deleteById(id);
         return new Success<>("List deleted successfully");
     }
 
     @Override
     public IResultType<Void> publishList(UUID id) {
-        Optional<List> optionalList = IListRepository.findById(id);
+        Optional<List> optionalList = listRepository.findById(id);
         if (!optionalList.isPresent()) {
             return new Failure<>("List not found");
         }
@@ -97,7 +107,7 @@ public class ListService implements IListService {
         }
 
         list.setIsPublished(true);
-        IListRepository.save(list);
+        listRepository.save(list);
         return new Success<>("List published successfully");
     }
 
@@ -111,27 +121,27 @@ public class ListService implements IListService {
         listItem.setList(list);
         listItem.setContent(content);
 
-        ListItem savedItem = IListItemRepository.save(listItem);
+        ListItem savedItem = listItemRepository.save(listItem);
         return new Success<>("Item added successfully", savedItem.getId());
     }
 
     @Override
     public IResultType<Void> removeItem(UUID id) {
-        if (!IListItemRepository.findById(id).isPresent()) {
+        if (!listItemRepository.findById(id).isPresent()) {
             return new Failure<>("Item not found");
         }
 
-        IListItemRepository.deleteById(id);
+        listItemRepository.deleteById(id);
         return new Success<>("Item removed successfully");
     }
 
     @Override
     public IResultType<Collection<ListItem>> getItemsByListId(UUID listId) {
-        if (!IListRepository.findById(listId).isPresent()) {
+        if (!listRepository.findById(listId).isPresent()) {
             return new Failure<>("List not found");
         }
 
-        Collection<ListItem> items = IListItemRepository.findAllById(listId);
+        Collection<ListItem> items = listItemRepository.findAllById(listId);
         return new Success<>("Items retrieved successfully", items);
     }
 }
