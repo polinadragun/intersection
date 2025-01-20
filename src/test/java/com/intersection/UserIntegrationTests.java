@@ -1,6 +1,6 @@
 package com.intersection;
 
-import com.intersection.infrastructure.controller.dto.RegisterResponse;
+import com.intersection.application.controller.dto.RegisterResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
