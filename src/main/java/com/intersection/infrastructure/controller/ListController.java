@@ -7,8 +7,7 @@ import com.intersection.application.services.resultType.Success;
 import com.intersection.domain.entity.List;
 import com.intersection.domain.entity.ListItem;
 import com.intersection.domain.entity.User;
-import com.intersection.infrastructure.controller.list.CreateListRequest;
-import com.intersection.infrastructure.controller.list.UpdateListRequest;
+import com.intersection.infrastructure.controller.list.ListRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class ListController {
     public ListController(IListService listService) { this.listService = listService; }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createList(@RequestBody CreateListRequest request) {
+    public ResponseEntity<?> createList(@RequestBody ListRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // var username = SecurityContextHolder.getContext().getAuthentication().getName();
         IResultType<UUID> rez = listService.createList(request.getTitle(), request.getDescription(), currentUser);
@@ -46,7 +45,7 @@ public class ListController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateList(@PathVariable UUID id, @RequestBody UpdateListRequest request) {
+    public ResponseEntity<?> updateList(@PathVariable UUID id, @RequestBody ListRequest request) {
         IResultType<Void> rez = listService.updateList(request.getTitle(), request.getDescription());
         return rez instanceof Success<Void>
                 ? new ResponseEntity<>(rez.getMessage(), HttpStatus.OK)

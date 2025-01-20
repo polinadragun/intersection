@@ -1,8 +1,6 @@
 package com.intersection.infrastructure.controller.list;
 
-import java.util.UUID;
-
-public class CreateListRequest {
+public class ListRequest {
     private String title;
     private String description;
 //    private UUID userId;
