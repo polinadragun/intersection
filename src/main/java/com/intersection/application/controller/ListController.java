@@ -1,5 +1,6 @@
 package com.intersection.application.controller;
 
+import com.intersection.application.repositoryAbstractions.UserRepository;
 import com.intersection.application.services.abstractions.IListService;
 import com.intersection.application.services.resultType.Failure;
 import com.intersection.application.services.resultType.IResultType;
@@ -22,18 +23,29 @@ import java.util.UUID;
 public class ListController {
     private final IListService listService;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public ListController(IListService listService) { this.listService = listService; }
+    public ListController(IListService listService, UserRepository userRepository) { this.listService = listService; this.userRepository = userRepository;}
 
     @PostMapping("/create")
     public ResponseEntity<?> createList(@RequestBody ListRequest request) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        IResultType<UUID> rez = listService.createList(request.getTitle(), request.getDescription(), currentUser);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return rez instanceof Success<UUID>
-                ? new ResponseEntity<>(rez.getResult(), HttpStatus.OK)
-                : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
+        if (!(principal instanceof org.springframework.security.core.userdetails.User)) {
+            return new ResponseEntity<>("Unauthorized: Invalid principal type. Actual type: " + principal.getClass().getName(), HttpStatus.UNAUTHORIZED);
+        }
+
+        org.springframework.security.core.userdetails.User springSecurityUser = (org.springframework.security.core.userdetails.User) principal;
+
+        User currentUser = userRepository.findByUsername(springSecurityUser.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        IResultType<UUID> result = listService.createList(request.getTitle(), request.getDescription(), currentUser);
+
+        return result instanceof Success<UUID>
+                ? new ResponseEntity<>(result.getResult(), HttpStatus.OK)
+                : new ResponseEntity<>(result.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/lists/{title}")

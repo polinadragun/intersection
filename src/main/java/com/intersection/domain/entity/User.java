@@ -3,14 +3,15 @@ package com.intersection.domain.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -40,7 +41,7 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
