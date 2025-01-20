@@ -61,12 +61,6 @@ public class UserServiceImpl implements UserService {
         if (!passwordHashingService.verifyPassword(password, user.getPasswordHash())) {
             throw new RuntimeException("Invalid username or password");
         }
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                user,
-                null,
-                List.of()
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return jwtUtil.generateToken(user.getUsername());
     }
