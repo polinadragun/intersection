@@ -1,4 +1,4 @@
-package com.intersection.infrastructure.controller.dto;
+package com.intersection.application.controller.dto;
 
 public class RegisterRequest {
     private String username;
