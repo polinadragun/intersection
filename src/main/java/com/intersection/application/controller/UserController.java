@@ -1,8 +1,8 @@
-package com.intersection.infrastructure.controller;
+package com.intersection.application.controller;
 
 import com.intersection.application.services.abstractions.UserService;
-import com.intersection.infrastructure.controller.dto.LoginRequest;
-import com.intersection.infrastructure.controller.dto.RegisterRequest;
+import com.intersection.application.controller.dto.LoginRequest;
+import com.intersection.application.controller.dto.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

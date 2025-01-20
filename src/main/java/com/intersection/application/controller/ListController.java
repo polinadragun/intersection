@@ -1,4 +1,4 @@
-package com.intersection.infrastructure.controller;
+package com.intersection.application.controller;
 
 import com.intersection.application.services.abstractions.IListService;
 import com.intersection.application.services.resultType.Failure;
@@ -7,7 +7,7 @@ import com.intersection.application.services.resultType.Success;
 import com.intersection.domain.entity.List;
 import com.intersection.domain.entity.ListItem;
 import com.intersection.domain.entity.User;
-import com.intersection.infrastructure.controller.list.ListRequest;
+import com.intersection.application.controller.list.ListRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

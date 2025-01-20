@@ -1,4 +1,4 @@
-package com.intersection.infrastructure.controller.list;
+package com.intersection.application.controller.list;
 
 public class ListRequest {
     private String title;
