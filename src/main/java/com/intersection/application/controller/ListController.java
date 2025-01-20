@@ -1,7 +1,5 @@
 package com.intersection.application.controller;
 
-import com.intersection.application.controller.list.CreateListRequest;
-import com.intersection.application.controller.list.UpdateListRequest;
 import com.intersection.application.repositoryAbstractions.UserRepository;
 import com.intersection.application.services.abstractions.IListService;
 import com.intersection.application.services.resultType.Failure;
@@ -10,6 +8,7 @@ import com.intersection.application.services.resultType.Success;
 import com.intersection.domain.entity.List;
 import com.intersection.domain.entity.ListItem;
 import com.intersection.domain.entity.User;
+import com.intersection.application.controller.list.ListRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +22,14 @@ import java.util.UUID;
 @RequestMapping("/api/lists")
 public class ListController {
     private final IListService listService;
+
     private final UserRepository userRepository;
 
     @Autowired
     public ListController(IListService listService, UserRepository userRepository) { this.listService = listService; this.userRepository = userRepository;}
 
     @PostMapping("/create")
-    public ResponseEntity<?> createList(@RequestBody CreateListRequest request) {
+    public ResponseEntity<?> createList(@RequestBody ListRequest request) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!(principal instanceof org.springframework.security.core.userdetails.User)) {
@@ -48,8 +48,6 @@ public class ListController {
                 : new ResponseEntity<>(result.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-
-
     @GetMapping("/lists/{title}")
     public ResponseEntity<?> getListByTitle(@PathVariable String title) {
         IResultType<List> rez = listService.getListByTitle(title);
@@ -59,7 +57,7 @@ public class ListController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateList(@PathVariable UUID id, @RequestBody UpdateListRequest request) {
+    public ResponseEntity<?> updateList(@PathVariable UUID id, @RequestBody ListRequest request) {
         IResultType<Void> rez = listService.updateList(request.getTitle(), request.getDescription());
         return rez instanceof Success<Void>
                 ? new ResponseEntity<>(rez.getMessage(), HttpStatus.OK)
