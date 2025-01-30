@@ -11,7 +11,7 @@ public interface IListItemRepository {
 
     Optional<ListItem> findById(UUID id);
 
-    Collection<ListItem> findAllById(UUID listId);
+    Collection<ListItem> findByListId(UUID listId);
 
     void deleteById(UUID itemId);
 }
