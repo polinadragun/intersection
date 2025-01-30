@@ -48,41 +48,40 @@ public class ListController {
                 : new ResponseEntity<>(result.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/lists/{title}")
-    public ResponseEntity<?> getListByTitle(@PathVariable String title) {
+    @GetMapping("/{title}")
+    public ResponseEntity<?> getListByTitle(@PathVariable("title") String title) {
         IResultType<List> rez = listService.getListByTitle(title);
         return rez instanceof Success<List>
                 ? new ResponseEntity<>(rez.getResult(), HttpStatus.OK)
                 : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<?> updateList(@PathVariable UUID id, @RequestBody ListRequest request) {
-        IResultType<Void> rez = listService.updateList(request.getTitle(), request.getDescription());
+    @PutMapping("update/{id}")
+    public ResponseEntity<?> updateList(@PathVariable("id") UUID id, @RequestBody ListRequest request) {
+        IResultType<Void> rez = listService.updateList(id, request.getTitle(), request.getDescription());
         return rez instanceof Success<Void>
                 ? new ResponseEntity<>(rez.getMessage(), HttpStatus.OK)
                 : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteList(@PathVariable UUID id) {
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteList(@PathVariable("id") UUID id) {
         IResultType<Void> rez = listService.deleteList(id);
         return rez instanceof Success<Void>
                 ? new ResponseEntity<>(rez.getMessage(), HttpStatus.OK)
                 : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/{id}/publish")
-    public ResponseEntity<?> publishList(@PathVariable UUID id) {
+    @PostMapping("publish/{id}")
+    public ResponseEntity<?> publishList(@PathVariable("id") UUID id) {
         IResultType<Void> rez = listService.publishList(id);
         return rez instanceof Success<Void>
                 ? new ResponseEntity<>(rez.getMessage(), HttpStatus.OK)
                 : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/{listId}/items")
-    public ResponseEntity<?> addItem(@PathVariable UUID listId, @RequestParam String content) {
-        // ??? - в листе находимся
+    @PostMapping("add/item/{listId}")
+    public ResponseEntity<?> addItem(@PathVariable("listId") UUID listId, @RequestParam String content) {
         IResultType<List> rezList = listService.getListById(listId);
         if (rezList instanceof Failure<List>) {
             return new ResponseEntity<>(rezList.getMessage(), HttpStatus.BAD_REQUEST);
@@ -96,16 +95,16 @@ public class ListController {
 
     }
 
-    @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<?> removeItem(@PathVariable UUID itemId) {
+    @DeleteMapping("remove/item/{itemId}")
+    public ResponseEntity<?> removeItem(@PathVariable("itemId") UUID itemId) {
         IResultType<Void> rez = listService.removeItem(itemId);
         return rez instanceof Success<Void>
                 ? new ResponseEntity<>(rez.getMessage(), HttpStatus.OK)
                 : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/{listId}/items")
-    public ResponseEntity<?> getItemsByListId(@PathVariable UUID listId) {
+    @GetMapping("get/items/{listId}")
+    public ResponseEntity<?> getItemsByListId(@PathVariable("listId") UUID listId) {
         IResultType<Collection<ListItem>> rez = listService.getItemsByListId(listId);
         return rez instanceof Success<Collection<ListItem>>
                 ? new ResponseEntity<>(rez.getResult(), HttpStatus.OK)
