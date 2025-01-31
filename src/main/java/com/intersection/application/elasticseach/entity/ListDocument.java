@@ -26,6 +26,8 @@ public class ListDocument {
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<ListItemDocument> items;
 
+    public ListDocument() {
+    }
 
     public ListDocument(com.intersection.domain.entity.List list) {
         this.id = list.getId();
@@ -37,5 +39,23 @@ public class ListDocument {
                 .toList();
     }
 
-    // Getters and Setters
+    public UUID getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Boolean getIsPublished() {
+        return isPublished;
+    }
+
+    public List<ListItemDocument> getItems() {
+        return items;
+    }
 }

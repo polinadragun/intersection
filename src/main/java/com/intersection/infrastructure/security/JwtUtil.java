@@ -16,7 +16,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    @Value("rjjroiutju556541654HDEIBG416584fgvjkgvhNHJEKH454xebrjkerBHB2145fxnxejrb212541541514BAEBHJBHEB45")
+    @Value("${JWT_SECRET}")
     private String secretKey;
     private Key key;
 

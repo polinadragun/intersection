@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 @Entity
@@ -56,5 +57,5 @@ public class List {
 
     public LocalDateTime getCreatedAt() { return this.createdAt; }
 
-    public Collection<ListItem> getItems() { return this.items; }
+    public Collection<ListItem> getItems() { return this.items != null ? this.items : Collections.emptyList();  }
 }

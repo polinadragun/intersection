@@ -34,6 +34,7 @@ public class ListService implements IListService {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
+
     @Autowired
     public ListService(IListRepository listRepository, IListItemRepository listItemRepository,
                        ListDocumentRepository listDocumentRepository, ElasticsearchOperations elasticsearchOperations) {
