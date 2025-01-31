@@ -3,6 +3,8 @@ package com.intersection.domain.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +30,10 @@ public class List {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "list", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Collection<ListItem> items;
+
+
     public UUID getId() { return this.id; }
 
     public void setTitle(String title) { this.title = title; }
@@ -49,4 +55,6 @@ public class List {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public LocalDateTime getCreatedAt() { return this.createdAt; }
+
+    public Collection<ListItem> getItems() { return this.items; }
 }

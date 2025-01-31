@@ -1,5 +1,7 @@
 package com.intersection.application.services.implementations;
 
+import com.intersection.application.elasticseach.entity.ListDocument;
+import com.intersection.application.elasticseach.repository.ListDocumentRepository;
 import com.intersection.application.repositoryAbstractions.IListItemRepository;
 import com.intersection.application.repositoryAbstractions.IListRepository;
 import com.intersection.application.services.abstractions.IListService;
@@ -10,22 +12,35 @@ import com.intersection.domain.entity.List;
 import com.intersection.domain.entity.ListItem;
 import com.intersection.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.data.elasticsearch.core.query.Query;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ListService implements IListService {
     private final IListRepository listRepository;
     private final IListItemRepository listItemRepository;
 
+    private final ListDocumentRepository listDocumentRepository;
+
+    private final ElasticsearchOperations elasticsearchOperations;
+
     @Autowired
-    public ListService(IListRepository listRepository, IListItemRepository listItemRepository) {
+    public ListService(IListRepository listRepository, IListItemRepository listItemRepository,
+                       ListDocumentRepository listDocumentRepository, ElasticsearchOperations elasticsearchOperations) {
         this.listRepository = listRepository;
         this.listItemRepository = listItemRepository;
+        this.listDocumentRepository = listDocumentRepository;
+        this.elasticsearchOperations = elasticsearchOperations;
     }
 
     @Override
@@ -42,6 +57,9 @@ public class ListService implements IListService {
         list.setIsPublished(false);
 
         List savedList = listRepository.save(list);
+
+        ListDocument listDocument = new ListDocument(savedList);
+        listDocumentRepository.save(listDocument);
         return new Success<>("List created successfully", savedList.getId());
     }
 
@@ -122,6 +140,12 @@ public class ListService implements IListService {
         listItem.setContent(content);
 
         ListItem savedItem = listItemRepository.save(listItem);
+
+        Optional<List> updatedList = listRepository.findById(list.getId());
+        updatedList.ifPresent(l -> {
+            ListDocument listDocument = new ListDocument(l);
+            listDocumentRepository.save(listDocument);
+        });
         return new Success<>("Item added successfully", savedItem.getId());
     }
 
@@ -143,5 +167,21 @@ public class ListService implements IListService {
 
         Collection<ListItem> items = listItemRepository.findAllById(listId);
         return new Success<>("Items retrieved successfully", items);
+    }
+    @Override
+    public IResultType<Collection<ListDocument>> searchLists(String keyword) {
+        Criteria criteria = new Criteria("title").matches(keyword)
+                .or(new Criteria("description").matches(keyword))
+                .or(new Criteria("items.content").matches(keyword));
+
+        Query searchQuery = new CriteriaQuery(criteria);
+
+        SearchHits<ListDocument> results = elasticsearchOperations.search(searchQuery, ListDocument.class);
+
+        Collection<ListDocument> documents = results.stream()
+                .map(hit -> hit.getContent())
+                .collect(Collectors.toList());
+
+        return new Success<>("Search results", documents);
     }
 }
