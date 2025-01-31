@@ -16,7 +16,7 @@ public interface IListService {
 
     IResultType<List> getListById(UUID listId);
 
-    IResultType<Void> updateList(String title, String description);
+    IResultType<Void> updateList(UUID id, String newTitle, String newDescription);
 
     IResultType<Void> deleteList(UUID id);
 

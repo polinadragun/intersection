@@ -49,6 +49,11 @@ public class ListService implements IListService {
             return new Failure<>("Title cannot be null or empty");
         }
 
+        IResultType<List> check_list = this.getListByTitle(title);
+        if (check_list instanceof Success) {
+            return new Failure<>("List with this title already exists");
+        }
+
         List list = new List();
         list.setTitle(title);
         list.setDescription(description);
@@ -84,21 +89,30 @@ public class ListService implements IListService {
     }
 
     @Override
-    public IResultType<Void> updateList(String title, String description) {
-        if (title == null || title.isEmpty()) {
-            return new Failure<>("Title cannot be null or empty");
-        }
-
-        Optional<List> optionalList = listRepository.findByTitle(title);
+    public IResultType<Void> updateList(UUID id, String newTitle, String newDescription) {
+        Optional<List> optionalList = listRepository.findById(id);
         if (!optionalList.isPresent()) {
             return new Failure<>("List not found");
         }
 
+        boolean isModified = false;
         List list = optionalList.get();
-        list.setTitle(title);
-        list.setDescription(description);
-        listRepository.save(list);
 
+        if (newTitle != null && !newTitle.equals(list.getTitle())) {
+            list.setTitle(newTitle);
+            isModified = true;
+        }
+
+        if (newDescription != null && !newDescription.equals(list.getDescription())) {
+            list.setDescription(newDescription);
+            isModified = true;
+        }
+
+        if (!isModified) {
+            return new Failure<>("List not modified");
+        }
+
+        listRepository.save(list);
         return new Success<>("List updated successfully");
     }
 
@@ -165,7 +179,7 @@ public class ListService implements IListService {
             return new Failure<>("List not found");
         }
 
-        Collection<ListItem> items = listItemRepository.findAllById(listId);
+        Collection<ListItem> items = listItemRepository.findByListId(listId);
         return new Success<>("Items retrieved successfully", items);
     }
     @Override
