@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping("/test")
     public String testEndpoint() {
-        return "Application is running!";
+        return "Application is running!!!!!!";
     }
 }

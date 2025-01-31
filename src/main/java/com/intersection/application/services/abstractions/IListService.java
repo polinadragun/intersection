@@ -3,6 +3,7 @@ package com.intersection.application.services.abstractions;
 import java.util.Collection;
 import java.util.UUID;
 
+import com.intersection.application.elasticseach.entity.ListDocument;
 import com.intersection.application.services.resultType.IResultType;
 import com.intersection.domain.entity.List;
 import com.intersection.domain.entity.ListItem;
@@ -26,4 +27,6 @@ public interface IListService {
     IResultType<Void> removeItem(UUID id);
 
     IResultType<Collection<ListItem>> getItemsByListId(UUID listId);
+    IResultType<Collection<ListDocument>> searchLists(String keyword);
+
 }
