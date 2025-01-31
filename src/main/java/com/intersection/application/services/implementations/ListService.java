@@ -113,6 +113,9 @@ public class ListService implements IListService {
         }
 
         listRepository.save(list);
+
+        ListDocument listDocument = new ListDocument(list);
+        listDocumentRepository.save(listDocument);
         return new Success<>("List updated successfully");
     }
 
@@ -123,6 +126,7 @@ public class ListService implements IListService {
         }
 
         listRepository.deleteById(id);
+        listDocumentRepository.deleteById(id);
         return new Success<>("List deleted successfully");
     }
 
@@ -140,6 +144,8 @@ public class ListService implements IListService {
 
         list.setIsPublished(true);
         listRepository.save(list);
+        ListDocument listDocument = new ListDocument(list);
+        listDocumentRepository.save(listDocument); ///пока под вопросом может можно избавиться от этого
         return new Success<>("List published successfully");
     }
 

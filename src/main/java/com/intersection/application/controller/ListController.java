@@ -1,5 +1,6 @@
 package com.intersection.application.controller;
 
+import com.intersection.application.elasticseach.entity.ListDocument;
 import com.intersection.application.repositoryAbstractions.UserRepository;
 import com.intersection.application.services.abstractions.IListService;
 import com.intersection.application.services.resultType.Failure;
@@ -110,4 +111,14 @@ public class ListController {
                 ? new ResponseEntity<>(rez.getResult(), HttpStatus.OK)
                 : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchLists(@RequestParam String keyword) {
+        IResultType<Collection<ListDocument>> rez = listService.searchLists(keyword);
+
+        return rez instanceof Success<Collection<ListDocument>>
+                ? new ResponseEntity<>(rez.getResult(), HttpStatus.OK)
+                : new ResponseEntity<>(rez.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }
